@@ -27,6 +27,51 @@ except Exception as e:
 FP_DIST = 0
 
 
+FASTPASSPRINT = '''
+#####################
+#{}#
+#####################
+#     FAST PASS     #
+#   Please Return   #
+#  Anytime Between  #
+#      {}     #
+#        AND        #
+#      {}     #
+#
+#     IMPORTANT:    #
+#    You may only   #
+#   have one valid  #
+#  FASTPASS ticket  #
+#     at a time     #
+#####################
+'''
+
+# first  {} = centered ride name
+# second {} = return window begin time "##:## #M"
+# third  {} = return window end time   "##:## #M"
+
+INVALIDFASTPASS = '''
+#####################
+#{}#
+#####################
+#                   #
+#    NOT A VALID    #
+#  FASTPASS TICKET  #
+#  Anytime Between  #
+#                   #
+#   You currently   #
+#  hold an active   #
+# FASTPASS® ticket  #
+#       for         #
+#{}#
+#                   #
+# Another FASTPASS® #
+#  ticket will be   #
+#  available after  #
+#      {}     #
+#####################
+'''
+
 # When a fast pass is reqested, take the guestID and send it to the server
 # the server will send one of two things
     # A message saying the guest can receive a fast pas
