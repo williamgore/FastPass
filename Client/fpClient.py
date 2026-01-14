@@ -1,8 +1,8 @@
 #this is the file that attractions offering fast pass will have running
 
 #each attraction must:
-    # have its own service rate
-    # have its own name
+    # have its own service rate √
+    # have its own name √
     # keep track of its own distributed fast pass
     # validate distributed fast passes
     # calculate fast pass return times (1 hour window)
@@ -19,13 +19,25 @@ SERVER_PORT = 8067
 
 SERVICE_RATE = 100 # Measured in guests per hour
 NAME = "New Ride"
+
+#checking for command line arguments
 try:
     NAME = sys.argv[1]
 except Exception as e:
-    print(e)
-    NAME = "New Ride"
+    print("No name given, using default name of " + NAME)
+try:
+    SERVICE_RATE = sys.argv[2]
+except Exception as e:
+    print("No service rate given, using default service rate of " + str(SERVICE_RATE))
+
 FP_DIST = 0
 
+#formatting
+FPWIDTH = 21
+NAMELINE = NAME
+spaces = (FPWIDTH - len(NAME))/2
+for i in range(int(spaces)):
+    NAMELINE = " " + NAMELINE + " "
 
 FASTPASSPRINT = '''
 #####################
@@ -72,6 +84,9 @@ INVALIDFASTPASS = '''
 #####################
 '''
 
+# first  {} = centered ride name
+# second {} = fastpass availability time "##:## #M"
+
 # When a fast pass is reqested, take the guestID and send it to the server
 # the server will send one of two things
     # A message saying the guest can receive a fast pas
@@ -89,6 +104,11 @@ INVALIDFASTPASS = '''
 # FAST PASS PRINTER #
 #####################
 
+def printer(valid) :
+    if valid:
+        print("Valid")
+    else:
+        print("Invalid")
 #the two types of fastpasses need to be stored client side in case the server goes down
 
 #############################

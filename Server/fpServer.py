@@ -11,7 +11,7 @@ import select
 from tinydb import TinyDB, Query
 import sys
 
-GUESTS = TinyDB('guests.json')
+GUESTS = TinyDB('Server/guests.json')
 
 SERVER_HOST = "127.0.0.1"
 SERVER_PORT = 8067
