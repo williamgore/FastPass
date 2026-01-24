@@ -124,7 +124,10 @@ while running:
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
     try:
-        message = input("\nInput a command:\n")
+        #the client should have two input methods
+        # new (guestID)
+        # redeem (guestID)
+        message = input("\nInput your request (new/redeem) and your guestID, separated by a space:\n")
         
         serverSocket.connect((SERVER_HOST, SERVER_PORT))
         
@@ -132,7 +135,8 @@ while running:
             running = 0
             serverSocket.close()
         else:
-            message = NAME + "/new/" + message
+            tokens = message.split()
+            message = NAME + "/" + tokens[0] + "/" + tokens[1]
             serverSocket.sendall(message.encode('utf-8'))
             response = serverSocket.recv(1024)
             print(response.decode('utf-8'))

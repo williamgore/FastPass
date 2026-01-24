@@ -10,8 +10,9 @@ import socket
 import select
 from tinydb import TinyDB, Query
 import sys
+import time
 
-GUESTS = TinyDB('Server/guests.json')
+GUESTS = TinyDB('guests.json')
 
 SERVER_HOST = "127.0.0.1"
 SERVER_PORT = 8067
@@ -19,8 +20,8 @@ SERVER_PORT = 8067
 DEBUG_HOST = "127.0.0.1"
 DEBUG_PORT = 8069
 
-MAXFP = 1
-WAITTIME = -1
+MAXFP = 1       #the maximum number of fastpasses to be held at a given time
+WAITTIME = 1000    #the amount of time you must wait before recieving an additional fast pass - measured in minutes
 
 serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -41,17 +42,45 @@ outputs = []
 #################################################################################
 
 def validateFastpass(guestID):
+    
     return True
 
 def processRequest(request):
-    tokens = request.split("/")
+    print(request)
     
     Guest = Query()
     
-    guest = GUESTS.search(Guest.guestID == int(tokens[2]))
+    tokens = request.split("/")
+    #tokens[1] is our method
+    if tokens[1] == 'new':
+        
+        
+        guest = (GUESTS.search(Guest.guestID == int(tokens[2])))[0]
+        
+        #a guest can recieve a fast pass if:
+        # their current number of fastpasses is less than the maximum
+        # AND the time since their last fastPass is less than WAITTIME
+        
+        print(guest)
+        
+        print("has fast pass: " + str(guest['hasFP']))
+        
+        if int(guest['hasFP']) < MAXFP:
+            if (time.time() - int(guest['lastFP']))/60 > WAITTIME:
+                print(guest['name'] + " can recieve a fastpass")
     
-    print(guest)
+    # this method is called by the client upon successful distribution of the FastPass
+    elif tokens[2] == 'add':
+        ride = tokens[0]
+        
+        GUESTS.update({'ride': ride}, Guest.guestID == int(tokens[2]))
+        
+        GUESTS.update({'hasFP': ride}, Guest.guestID == int(tokens[2]))
+        print()
     
+    elif tokens[3] == 'redeem':
+        print()
+        
     return "message recieved"
 
 #################################################################################
@@ -79,7 +108,7 @@ while inputs:
             print(str(portnum))
             if data:
                 message = data.decode('UTF-8')
-                response = "Bad Request"
+                response = "Bad Request\nExpecting GuestID as sole input"
                 
                 try:
                     response = processRequest(message)

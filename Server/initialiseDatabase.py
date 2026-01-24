@@ -3,7 +3,7 @@
 from tinydb import TinyDB, Query
 
 #loading the database
-guests = TinyDB('Server/guests.json')
+guests = TinyDB('guests.json')
 
 # Clearing the existing database
 guests.truncate()
