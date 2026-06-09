@@ -115,36 +115,36 @@ def printer(valid) :
 # FAST PASS REQUEST HANDLER #
 #############################
 
+def processRequest(message):
+    if message == "quit":
+            running = 0
+    else :
+        tokens = message.split()
+        message = NAME + "/" + tokens[0] + "/" + tokens[1]
+        response = send(message)
+        print(response)
 
+# Sends messages to the server
+def send(message) :
+    
+    serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    
+    try:
+        serverSocket.connect((SERVER_HOST, SERVER_PORT))
+        
+        serverSocket.sendall(message.encode('utf-8'))
+        response = (serverSocket.recv(1024)).decode('utf-8')
+        
+        return response
+            
+    except Exception as e:
+        print("Unable to connect to server...")
+        print(e)
     
 running = 1
     
 while running:
-
-    serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    
-    try:
-        #the client should have two input methods
-        # new (guestID)
-        # redeem (guestID)
-        message = input("\nInput your request (new/redeem) and your guestID, separated by a space:\n")
-        
-        serverSocket.connect((SERVER_HOST, SERVER_PORT))
-        
-        if message == "quit":
-            running = 0
-            serverSocket.close()
-        else:
-            tokens = message.split()
-            message = NAME + "/" + tokens[0] + "/" + tokens[1]
-            serverSocket.sendall(message.encode('utf-8'))
-            response = serverSocket.recv(1024)
-            print(response.decode('utf-8'))
-            
-    except Exception as e:
-        print("Unable to connect to server, assuming honest guest...")
-        print(e)
-        
-    
-        
+    message = input("\nInput your request (new/redeem) and your guestID, separated by a space:\n")
+    processRequest(message)
+      
 print("Exiting the program...")

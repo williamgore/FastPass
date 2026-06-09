@@ -41,21 +41,22 @@ outputs = []
 
 #################################################################################
 
+# currently a guest can get unlimited fast passes at once
 def validateFastpass(guestID):
-    
     return True
 
 def processRequest(request):
+    response = "Message Recieved"
+    
     print(request)
     
     Guest = Query()
     
     tokens = request.split("/")
+    
+    guest = (GUESTS.search(Guest.guestID == int(tokens[2])))[0]
     #tokens[1] is our method
     if tokens[1] == 'new':
-        
-        
-        guest = (GUESTS.search(Guest.guestID == int(tokens[2])))[0]
         
         #a guest can recieve a fast pass if:
         # their current number of fastpasses is less than the maximum
@@ -68,20 +69,23 @@ def processRequest(request):
         if int(guest['hasFP']) < MAXFP:
             if (time.time() - int(guest['lastFP']))/60 > WAITTIME:
                 print(guest['name'] + " can recieve a fastpass")
+                response = "valid"
     
     # this method is called by the client upon successful distribution of the FastPass
-    elif tokens[2] == 'add':
+    elif tokens[1] == 'add':
+        print("updating database...")
+        
         ride = tokens[0]
         
         GUESTS.update({'ride': ride}, Guest.guestID == int(tokens[2]))
         
-        GUESTS.update({'hasFP': ride}, Guest.guestID == int(tokens[2]))
+        GUESTS.update({'hasFP': (int(guest['hasFP']) + 1)}, Guest.guestID == int(tokens[2]))
         print()
     
-    elif tokens[3] == 'redeem':
+    elif tokens[1] == 'redeem':
         print()
         
-    return "message recieved"
+    return response
 
 #################################################################################
 

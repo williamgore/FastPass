@@ -10,7 +10,7 @@ guests.truncate()
 
 # SCHEMA
 # name     - String  - Name of the guest
-# guestID  - Integer -'primary key' (if it were a relational database), this is what the fpClient will send the server
+# guestID  - Integer - 'primary key' (if it were a relational database), this is what the fpClient will send the server
 # hasFP    - Integer - current number of fastpasses held by the guest (could allow for additional fastpasses, ie. the two hour rule)
 # lastFP   - Time    - the time at which the guest obtained their last fastpass
 # currRide - String  - the ride that they currently 
